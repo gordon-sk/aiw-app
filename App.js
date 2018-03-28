@@ -20,6 +20,7 @@ import { Test_Conclusion } from './Screens/13_Test_Conclusion';
 import { Questionnaire } from './Screens/14_Post_experiment_questionnaire';
 import { Debrief } from './Screens/15_Debrief';
 import { Test } from './Screens/Test';
+import { Previous_Results } from './Screens/Previous_Results';
 import { TestingEnv } from './Screens/testtest';
 
 export default class App extends React.Component {
@@ -42,6 +43,7 @@ const AppNav = StackNavigator({
   Registration: {screen: Registration},
   Subject: {screen: Subject},
   Login: {screen: Login},
+  Previous_Results: {screen: Previous_Results},
   ViewingInstructions: {screen: ViewingInstructions},
   Viewing: {screen: Viewing},
   PT1_Instructions: {screen: PT1_Instructions},

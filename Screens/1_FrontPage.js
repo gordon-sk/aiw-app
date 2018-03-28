@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { logoSize } from '../Components and Helpers/ImageSizing';
-import { testInitialization } from '../Components and Helpers/testInit';
 
 // Class for the front page of the App
 // Standard react-native code... takes no props and only uses built-in components
@@ -22,10 +21,6 @@ import { testInitialization } from '../Components and Helpers/testInit';
 export class Home extends Component {
   state = {
     dims: logoSize(940, 198)
-  }
-
-  componentWillMount() {
-    testInitialization();
   }
 
   handleLogOut = () => {
@@ -81,7 +76,7 @@ export class Home extends Component {
       	    color='black'
             style={styles.button}
             icon={{name: 'results', type: 'foundation'}}
-            onPress={() => this.props.navigation.navigate('Results')}
+            onPress={() => this.props.navigation.navigate('Previous_Results')}
             title='View Previous Results'
           />
           <Button
