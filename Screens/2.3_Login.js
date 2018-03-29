@@ -23,7 +23,6 @@ export class Login extends Component {
     password: null,
     unknown: null,
     loading: null,
-    cancel: false,
   }
 
   // plan is to expand this to handle user cancelling a login request
@@ -34,10 +33,11 @@ export class Login extends Component {
   // Just something to make easier for user to understand.
   handleBackPress = () => {
     const { goBack } = this.props.navigation;
-    this.setState({cancel: true});
-    goBack();
-  } 
-  
+    if (!this.state.loading) {
+      goBack();
+    }
+  }
+
   verifyLoginCreds = () => {
     if (this.state.email == null) {
       Alert.alert('Please enter an email address.');
@@ -72,25 +72,25 @@ export class Login extends Component {
         });
     }
   }
-  
+
   // Security information:
   // http://web2py.com/book/default/chapter/07?search=formstyle#Complexity-and-security-validators
-  
-  render() { 
+
+  render() {
     return (
       <View style={styles.container}>
-        <ScrollView 
-          keyboardDismissMode='on-drag' 
+        <ScrollView
+          keyboardDismissMode='on-drag'
           contentContainerStyle={styles.contentContainer}>
           <View style={styles.viewStyle}>
             <Text style={styles.textStyle}>
-              NOTE: logging in requires internet / cell connection. 
-              
-              
+              NOTE: logging in requires internet / cell connection.
+
+
               Please enter the email address you registered with below.
             </Text>
           </View>
-          <TextInput 
+          <TextInput
             style={styles.inputStyle}
             keyboardType = 'email-address'
             autoCorrect = {false}
@@ -103,7 +103,7 @@ export class Login extends Component {
               Please enter your password.
             </Text>
           </View>
-          <TextInput 
+          <TextInput
             style={styles.inputStyle}
             keyboardType = 'default'
             Value = {this.state.password}
@@ -111,7 +111,7 @@ export class Login extends Component {
             secureTextEntry = {true}
             onChangeText = {(text) => this.setState({password: text})}
           />
-          {this.state.unknown ? 
+          {this.state.unknown ?
           <Text style={{color: 'red', fontWeight: 'bold'}}>
             Unknown email or password.
           </Text>: null}
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   viewStyle: {
-    marginTop: 25, 
+    marginTop: 25,
     width: Dimensions.get('window').width * .8
   },
   contentContainer: {

@@ -16,29 +16,19 @@ import {
 
 export class TestingEnv extends React.Component {
 
-	 renderDots() {
-	   toReturn = [];
-		 for (let x=0; x<global.barCoords.length; x++) {
-	 		toReturn.push(
-	 			<Image
-					source={require('../Pictures/bar.png')}
-					style={{
-						top: global.barCoords[x].top,
-						left: global.barCoords[x].left,
-						position: 'absolute',
-					}}
-					key={x}
-				/>
-			);
-		}
-		return toReturn;
-	}
+	handleLogOut = () => {
+		var url = 'https://gskiesling.pythonanywhere.com/AIW/default/test_method?';
+		fetch(url)
+			.then(responseData => {
+				console.log(responseData);
+			})
 
+		this.props.navigation.navigate('Home');
+	}
 
 	render() {
 		return(
 			<View style={styles.container}>
-				{this.renderDots()}
 			</View>
 			);
 	}

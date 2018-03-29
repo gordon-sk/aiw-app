@@ -76,7 +76,7 @@ export class Home extends Component {
       	    color='black'
             style={styles.button}
             icon={{name: 'results', type: 'foundation'}}
-            onPress={() => this.props.navigation.navigate('Previous_Results')}
+            onPress={() => this.props.navigation.navigate('Results_List')}
             title='View Previous Results'
           />
           <Button
