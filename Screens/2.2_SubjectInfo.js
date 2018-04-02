@@ -15,7 +15,7 @@ import { Button } from 'react-native-elements';
 // Age, gender, ethnicity, and education level
 // Uses built-in components as well as a modal dropdown picker I found on github
 // If user returns home, warning appears that data will be cleared
-// If user finishes and continues, warning appears that information cannot be 
+// If user finishes and continues, warning appears that information cannot be
 // edited
 export class Subject extends Component {
   state = {
@@ -45,7 +45,7 @@ export class Subject extends Component {
       6: 'I Choose not to Report'
     },
   }
-  
+
   componentDidMount() {
     if (Platform.OS == 'ios') {
       this.setState({keyboardType: 'numeric'});
@@ -54,7 +54,7 @@ export class Subject extends Component {
       this.setState({keyboardType: 'numeric'});
     }
   }
-  
+
   handleContinue = () => {
     if (this.state.age == null) {
       Alert.alert("Please enter your age.");
@@ -82,7 +82,7 @@ export class Subject extends Component {
       { cancelable: true });
     }
   }
-  
+
   record_and_continue = () => {
     this._record();
     this.props.navigation.navigate('Home');
@@ -91,9 +91,9 @@ export class Subject extends Component {
     console.log('user ethnicity: ' + this.state.ethnicity);
     console.log('user education: ' + this.state.education);
   }
-  
+
   _record = () => {
-    var url = 'https://gskiesling.pythonanywhere.com/AIW/default/bio_call?';
+    var url = 'https://filtergraph.com/aiw/default/bio_call?';
     url += 'age=' + String(this.state.age) + '&';
     url += 'gender=' + this.state.gender + "&";
     url += 'ethnicity=' + this.state.ethnicity + "&";
@@ -106,31 +106,31 @@ export class Subject extends Component {
         console.log('Receipt of bio info backend: ' + String(responseText));
     });
   }
-  
+
   handleGoBack = () => {
     const { goBack } = this.props.navigation;
     Alert.alert("All entered information will be deleted");
     goBack();
   }
-  
+
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView 
-          keyboardDismissMode='on-drag' 
+        <ScrollView
+          keyboardDismissMode='on-drag'
           contentContainerStyle={styles.contentContainer}
         >
-          <View> 
-            <Text style={styles.headerText}> 
-                  Please provide some general demographic information. 
-                  The information collected for this study will be maintained 
-                  confidentially, and will be used only for the purposes 
+          <View>
+            <Text style={styles.headerText}>
+                  Please provide some general demographic information.
+                  The information collected for this study will be maintained
+                  confidentially, and will be used only for the purposes
                   of this study.
             </Text>
           </View>
           <View>
             <Text style={styles.categoryText}>Age:</Text>
-            <TextInput 
+            <TextInput
               style={styles.inputStyle}
               keyboardType = {this.state.keyboardType}
               maxLength = {2}
@@ -140,7 +140,7 @@ export class Subject extends Component {
           </View>
           <View>
             <Text style={styles.categoryText}>Gender:</Text>
-            <ModalDropdown 
+            <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
                 dropdownStyle={styles.dropDown}
@@ -154,7 +154,7 @@ export class Subject extends Component {
           </View>
           <View>
             <Text style={styles.categoryText} >Ethnicity:</Text>
-            <ModalDropdown 
+            <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
                 dropdownStyle={styles.dropDown}
@@ -173,7 +173,7 @@ export class Subject extends Component {
           </View>
           <View>
             <Text style={styles.categoryText} >Education:</Text>
-            <ModalDropdown 
+            <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
                 dropdownStyle={styles.dropDown}
@@ -211,7 +211,7 @@ export class Subject extends Component {
           </View>
         </ScrollView>
       </View>
-      
+
     );
   }
 }

@@ -25,7 +25,7 @@ export class Questionnaire extends Component {
   }
 
   backend() {
-  	var url = 'https://gskiesling.pythonanywhere.com/AIW/default/questionnaire?'
+  	var url = 'https://filtergraph.com/aiw/default/questionnaire?'
   	url += 'key=' + global.key + '&';
   	url += 'user_ID=' + global.user_ID + '&';
   	url += 'engagement=' + this.state.engagement + '&';
@@ -35,10 +35,10 @@ export class Questionnaire extends Component {
   		.then((response) => response.text())
   	  .then((responseText) => {
   	  	if (responseText != 'questionnaire answers logged successfully') {
-  	  		console.log('questionnaire backend response: ' + responseText);
+  	  		console.log('bad questionnaire backend response: ' + responseText);
   	  	}
   	  	else {
-  	  		console.log('bad quesionnaire backend response: ' + responseText);
+  	  		console.log(responseText);
   	  	}
   	  });
   }

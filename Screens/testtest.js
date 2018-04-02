@@ -2,35 +2,47 @@ import React from 'react';
 import {
 	View,
 	Image,
+	Easing,
+	PanResponder,
+	Dimensions,
 	StyleSheet,
+	Platform,
 } from 'react-native';
-
-
-// THIS FILE
-// is currently unused.
-// Sometimes I put a button on the frontpage that leads to it when
-// I want to see something rendered.
-// Think of it as a test environment
-
+import { FormInput} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export class TestingEnv extends React.Component {
-
-	handleLogOut = () => {
-		var url = 'https://gskiesling.pythonanywhere.com/AIW/default/test_method?';
-		fetch(url)
-			.then(responseData => {
-				console.log(responseData);
-			})
-
-		this.props.navigation.navigate('Home');
-	}
-
 	render() {
 		return(
-			<View style={styles.container}>
+			<View>
+			<FormInput
+placeholder='BASIC FormInput'
+/>
+
+<FormInput
+placeholder='FormInput WITH ICON'
+leftIcon={
+	<Icon
+		name='user'
+		size={24}
+		color='black'
+	/>
+}
+/>
+
+<FormInput
+placeholder='FormInput WITH SHAKING EFFECT'
+shake={true}
+/>
+
+<FormInput
+placeholder='FormInput WITH ERROR MESSAGE'
+errorStyle={{ color: 'red' }}
+errorMessage='ENTER A VALID ERROR HERE'
+/>
 			</View>
-			);
+		);
 	}
 }
 
@@ -40,4 +52,13 @@ const styles = StyleSheet.create({
 			backgroundColor: '#808080',
 			marginTop: 20,
 		},
+	centerCircleView: {
+			top: '50%',
+			left: '50%',
+			transform: [{translate: [global.centerTranslate, global.centerTranslate]}]
+		},
+	imagesView: {
+		flex: 1,
+		position:'absolute',
+	},
 });

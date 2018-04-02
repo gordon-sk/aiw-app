@@ -7,116 +7,140 @@ import {
 	Dimensions,
 	StyleSheet,
 	Platform,
+	Text
 } from 'react-native';
 import { acc_helper } from '../Components and Helpers/acc_helper';
+import { theta_calc } from '../Components and Helpers/theta_calc';
 
 export class Test extends React.Component {
 
-	state = {
-		bar_space: 9999,
-		circle_space: 9999,
-		rotation_scale: 360 / Dimensions.get('window').width,
-		screenX: Dimensions.get('window').width,
-		screenY: Dimensions.get('window').height,
-
-		random_rot_addition: Math.random() * 360,
-		n: null,
-		targetIndex: null,
-		indexes: null,
-
-		count: this.props.navigation.state.params.count + 1,
-		maxCount: this.props.navigation.state.params.maxCount,
-		scores: this.props.navigation.state.params.scores,
-		test_name: this.props.navigation.state.params.test_name,
-
-		done_waiting: false,
-
-		targetTop: null,
-		targetLeft: null,
-		target_bar_rotation: null,
-
-		user_rotation: 0,
-		tapped: false,
-	}
-
-	componentWillMount() {
-		setTimeout(() => {this.setState({done_waiting: true})}, 3200);
-		var n = this.props.navigation.state.params.n;
-		// in the real test, every 11th screen is a one-bar screen
-		if (this.props.navigation.state.params.test_name == "Test") {
-			if (((this.props.navigation.state.params.count + 1) / 11)%1 == 0) {
-		 		n = 1;
-		 	}
+	reset() {
+		var count = this.state.count + 1;
+		this.setState({
+			done_waiting: false,
+			tapped: false,
+			circle_space: 9999,
+		})
+		if (this.state.test_name == 'Test') {
+			if (((count + 1) / 11)%1 == 0) {
+				this.setState({n: 1});
+			}
+			else {
+				this.setState({n: 6});
+			}
 		}
-		var targetIndex = Math.floor(Math.random() * global.barCoords.length);
+		// choosing a target index at random
+		var targetIndex = Math.floor(Math.random() * 6);
+		// resetting its rotation to a new random value
 		global.barCoords[targetIndex].rot = Math.random() * 360;
 		var indexes = [targetIndex];
-		while (indexes.length < n) {
-			var index = Math.floor(Math.random() * global.barCoords.length);
+		while (indexes.length < this.state.n) {
+			var index = Math.floor(Math.random() * 6);
 			if (!indexes.includes(index)) {
 				indexes.push(index);
 				global.barCoords[index].rot = Math.random() * 360;
-
 			}
 		}
 		this.setState({
-			n: n,
-			targetIndex: targetIndex,
-			targetLeft: global.barCoords[targetIndex].left,
-			targetTop: global.barCoords[targetIndex].top,
-			target_bar_rotation: global.barCoords[targetIndex].rot,
+			target_index: targetIndex,
 			indexes: indexes,
-			user_rotation: this.state.random_rot_addition,
+			count: count,
 		});
 
-		// assigning constant coordinate values to junk bars
+		// doing the timing
+		// setTimeout(() => {func}, t);
+		setTimeout(() => {this.setState({done_waiting: true})}, 3500);
+		setTimeout(() => {this.setState({bar_space: 0})}, 1500);
+		setTimeout(() => {this.setState({bar_space: 9999})}, 1700);
+		setTimeout(() => {this.setState({circle_space: 0})}, 2700);
+	}
+
+	componentWillMount() {
+
+		var test_name = this.props.navigation.state.params.test_name;
+		var n = 6;
+		var count = 0;
+		var max_count = 0;
+		if (test_name == 'PT2') {
+			n = 2;
+			max_count = 5;
+		}
+		else if (test_name == 'PT3') {
+			max_count = 10;
+		}
+		else if (test_name == 'Test') {
+			max_count = 106;
+		}
+
+		this.setState({
+			test_name: test_name,
+			n: n,
+			count: count,
+			max_count: max_count,
+			last_angle: 0,
+			done_waiting: false,
+			tapped: false,
+			user_rotation: Math.random()*360,
+			target_index: 0,
+			indexes: [],
+			scores: [],
+			bar_space: 9999,
+			circle_space: 9999,
+			last_angle: 0,
+		});
+
 		this._panResponder = PanResponder.create({
-			// Ask to be the responder:
+
+			// boring, procedural code
+			// Did I copy and paste this from the react-native docs? Maybe.
 			onStartShouldSetPanResponder: (evt, gestureState) => true,
 			onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
 			onMoveShouldSetPanResponder: (evt, gestureState) => true,
 			onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-
 			onPanResponderReject: (evt, gestureState) => {},
+
+			// The good stuff
 			onPanResponderGrant: (evt, gestureState) => {
 				// The gesture has started.
-				this.setState({lastTouch_t0: evt.nativeEvent.timestamp});
-			},
+				// recording time and the angle the user starts his touch at
+				this.setState({
+					this_touch_t0: evt.nativeEvent.timestamp,
+					this_touch_theta0: theta_calc(evt.nativeEvent),
+				});
+		  },
 			onPanResponderMove: (evt, gestureState) => {
-				// The most recent move distance is gestureState.move{X,Y}
-				// The accumulated gesture distance since becoming responder is
-				// gestureState.d{x,y}
-				var dT = evt.nativeEvent.timestamp - this.state.lastTouch_t0;
-				if (dT > 100) {
-					var x = evt.nativeEvent.pageX - this.state.screenX / 2;
-					var y = evt.nativeEvent.pageY - this.state.screenY / 2;
-					var theta = Math.atan2(y, x) * 180 / 3.14159265;
+				// the user is moving his finger
+				var dT = evt.nativeEvent.timestamp - this.state.this_touch_t0;
+				// we won't execute any calculations until the touch is longer
+				// than just a tap
+				if (dT > 100 && !this.state.tapped) {
+					var theta = theta_calc(evt.nativeEvent);
+					var dTheta = theta - this.state.this_touch_theta0;
 					if (this.state.done_waiting && !this.state.tapped) {
-						this.setState({user_rotation: theta + this.state.random_rot_addition});
+						this.setState({user_rotation: this.state.last_angle + dTheta});
 					}
 				}
 			},
 			onPanResponderTerminationRequest: (evt, gestureState) => true,
 			onPanResponderRelease: (evt, gestureState) => {
-				// The user has released all touches while this view is the
-				// responder. This typically means a gesture has succeeded
-				var dT = evt.nativeEvent.timestamp - this.state.lastTouch_t0;
-				var test_name = this.state.test_name;
+				// touch is finished -- user has lifted his hand
+				// first we record the last angle touched at
+				// this keeps future movements smooth and prevents the bar
+				// from jumping around
+				this.setState({last_angle: this.state.user_rotation });
+				// time calculation...
+				var dT = evt.nativeEvent.timestamp - this.state.this_touch_t0;
+				// if it WAS a tap, the user hasn't tapped before, and
+				// the waiting period for the bar is over:
 				if (dT <= 100 && !this.state.tapped && this.state.done_waiting) {
 					this.setState({tapped: true});
-					this.state.scores.push(this.record());
+					this.state.scores.push(this.record(this.state.count));
 					setTimeout(() => {}, 1000);
-					if (this.state.count == this.state.maxCount) {
+					if (this.state.count == this.state.max_count) {
 						this.props.navigation.navigate(test_name+'_Conclusion', {scores: this.state.scores});
 					}
 					else {
-						this.props.navigation.navigate('Test', {
-							n: this.state.n,
-							count: this.state.count,
-							maxCount: this.state.maxCount,
-							scores: this.state.scores,
-							test_name: this.state.test_name,
-						});
+						this.reset();
 					}
 				}
 			},
@@ -127,45 +151,40 @@ export class Test extends React.Component {
 	}
 
 	componentDidMount() {
-		setTimeout(() => {this.setState({bar_space: 0})}, 1500);
-		setTimeout(() => {this.setState({bar_space: 9999})}, 1700);
-		setTimeout(() => {this.setState({circle_space: 0})}, 2700);
+		// finally, we call reset for the first time to kick off the test
+		this.reset();
 	}
 
-	record() {
-		if (this.state.done_waiting) {
-			var score = acc_helper(this.state.target_bar_rotation, this.state.user_rotation);
-			var url = 'https://gskiesling.pythonanywhere.com/AIW/default/log_scores?';
-			url += 'score=' + String(score) + '&';
-			url += 'test_name=' + this.state.test_name + '&';
-			url += 'user_ID=' + global.user_ID + '&';
-			url += 'test_ID=' + global.test_ID + '&';
-			url += 'key=' + global.key;
-			global.scores['PT2'].push(score);
-			fetch(url)
-			  .then((response) => response.text())
-			  .then((responseText) => {
-				console.log("backend receipt: " + this.state.test_name + ", screen "
-				+ this.state.count + ", score " + String(score) + ', :' + responseText);
-			  });
-			return score;
-		}
+	// pushing the score to the backend
+	record(count) {
+		var score = acc_helper(global.barCoords[this.state.target_index].rot, this.state.user_rotation);
+		var url = 'https://filtergraph.com/aiw/default/log_scores?';
+		url += 'score=' + String(score) + '&';
+		url += 'test_name=' + this.state.test_name + '&';
+		url += 'user_ID=' + global.user_ID + '&';
+		url += 'test_ID=' + global.test_ID + '&';
+		url += 'key=' + global.key;
+		fetch(url)
+			.then((response) => response.text())
+			.then((responseText) => {
+			console.log("backend receipt: " + this.state.test_name + ", screen "
+			+ String(count) + ", score " + String(score) + ': ' + responseText);
+			});
+		return score;
 	}
 
+	// rendering the bars, and the cirle
 	renderImages() {
 		const bars = [];
-		for (let i=0; i < this.state.indexes.length; i++) {
-			var tgtString = "_TARGET";
-			if (!i == this.state.targetIndex) {tgtString = ''}
-			var index = this.state.indexes[i];
+		for (let x=0; x<this.state.indexes.length; x++) {
 			bars.push(
-				<View key={"bar_"+i+tgtString}>
+				<View key={'bar_'+String(x)}>
 					<Image
 						source={require('../Pictures/bar.png')}
 						style={{
-							transform: [{rotate: global.barCoords[index].rot + 'deg'}],
-							top: global.barCoords[index].top,
-							left: global.barCoords[index].left + this.state.bar_space,
+							transform: [{rotate: global.barCoords[this.state.indexes[x]].rot + 'deg'}],
+							top: global.barCoords[this.state.indexes[x]].top,
+							left: global.barCoords[this.state.indexes[x]].left + this.state.bar_space,
 							height: global.barLength,
 							width: global.barLength,
 							position: 'absolute',
@@ -175,20 +194,20 @@ export class Test extends React.Component {
 			);
 		}
 		bars.push(
-				<View key={"circle"}>
-					<Image
-						source={require('../Pictures/new-circle.png')}
-						style={{
-							top: this.state.targetTop,
-							left: this.state.targetLeft + this.state.circle_space,
-							height: global.barLength,
-							width: global.barLength,
-							position: 'absolute',
-						}}
-					/>
-				</View>
-			);
-	return bars;
+			<View key={'circle'}>
+				<Image
+					source={require('../Pictures/new-circle.png')}
+					style={{
+						top: global.barCoords[this.state.target_index].top,
+						left: global.barCoords[this.state.target_index].left + this.state.circle_space,
+						height: global.barLength,
+						width: global.barLength,
+						position: 'absolute',
+					}}
+				/>
+			</View>
+		);
+		return bars;
 	}
 
 	renderUserBar() {
@@ -207,17 +226,17 @@ export class Test extends React.Component {
 	}
 
 	render() {
-		var opacity = 0;
+		var user_bar_opacity = 0;
 		if (this.state.done_waiting) {
-			opacity = 1;
+			user_bar_opacity = 1;
 		}
 		return(
 			<View style={styles.container} {...this._panResponder.panHandlers}>
 				<View style={{position: 'absolute',
 											top: '50%',
 											left: '50%',
-											opacity: opacity,
-											transform: [{translate: [global.centerTranslate,global.centerTranslate]}],
+											opacity: user_bar_opacity,
+											transform: [{translate: [global.centerTranslate, global.centerTranslate]}],
 											}}>
 					{this.renderUserBar()}
 				</View>
@@ -227,12 +246,12 @@ export class Test extends React.Component {
 										transform: [{translate: [global.centerTranslate, global.centerTranslate]}]
 						}}>
 					<Image
-						source={require('../Pictures/newimage.png')}
+						source={require('../Pictures/center_circle.png')}
 						style={{height: global.barLength,
 										width: global.barLength}}
 					/>
 				</View>
-				<View style={styles.targetBarView}>
+				<View style={styles.imagesView}>
 					{this.renderImages()}
 				</View>
 			</View>
@@ -252,8 +271,8 @@ const styles = StyleSheet.create({
 			left: '50%',
 			transform: [{translate: [global.centerTranslate, global.centerTranslate]}]
 		},
-	targetBarView: {
-		flex:1,
+	imagesView: {
+		flex: 1,
 		position:'absolute',
 	},
 });

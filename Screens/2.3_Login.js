@@ -9,14 +9,9 @@ import {
   Dimensions
 } from 'react-native';
 import { Button } from 'react-native-elements';
+import { FormInput} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-// Class for the front page of the App
-// Standard react-native code... takes no props and only uses built-in components
-// Header image
-// Header Text
-// Link to website
-// Button to begin visual memory test
-// Vanderbilt Uni logo
 export class Login extends Component {
   state = {
     email: null,
@@ -25,14 +20,11 @@ export class Login extends Component {
     loading: null,
   }
 
-  // plan is to expand this to handle user cancelling a login request
-  // if it is taking forever for whatever reason...
-  // as of right now, if the backend takes forever to respond to a login request,
-  // and the user presses the back button, it will navigate from the home screen
-  // to a login home screen suddenly. It is a little unintuitive. Not a huge deal.
-  // Just something to make easier for user to understand.
   handleBackPress = () => {
     const { goBack } = this.props.navigation;
+    // don't let user cancel a loading request. I know it's frustrating.
+    // Problem is, you'll get unexpected behavior if the user heads back
+    // to the homescreen and then suddenly the backend shows up after all
     if (!this.state.loading) {
       goBack();
     }
@@ -47,7 +39,7 @@ export class Login extends Component {
     }
     else {
         this.setState({loading: true});
-        var url = 'https://gskiesling.pythonanywhere.com/AIW/default/login?';
+        var url = 'https://filtergraph.com/aiw/default/login?';
         url += 'email=' + this.state.email + '&';
         url += 'password=' + this.state.password;
         return fetch(url)
@@ -73,9 +65,6 @@ export class Login extends Component {
     }
   }
 
-  // Security information:
-  // http://web2py.com/book/default/chapter/07?search=formstyle#Complexity-and-security-validators
-
   render() {
     return (
       <View style={styles.container}>
@@ -90,12 +79,18 @@ export class Login extends Component {
               Please enter the email address you registered with below.
             </Text>
           </View>
-          <TextInput
-            style={styles.inputStyle}
+          <FormInput
+            containerStyle={styles.inputStyle}
             keyboardType = 'email-address'
             autoCorrect = {false}
             Value = {this.state.email}
             placeholder = 'you@example.com'
+            leftIcon={
+              <Icon
+                name='user'
+                size={24}
+                color='black'
+              />}
             onChangeText = {(text) => this.setState({email: text})}
           />
           <View style={styles.viewStyle}>
@@ -103,8 +98,9 @@ export class Login extends Component {
               Please enter your password.
             </Text>
           </View>
-          <TextInput
+          <FormInput
             style={styles.inputStyle}
+            containerStyle={styles.inputStyle}
             keyboardType = 'default'
             Value = {this.state.password}
             placeholder = 'password'
@@ -165,9 +161,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     backgroundColor: 'white',
-    width: 200,
-    fontSize: 15,
-    textAlign: 'center',
+    width: Dimensions.get('window').width * .8,
+    borderRadius: .4
   },
   textStyle: {
     textAlign: 'left',

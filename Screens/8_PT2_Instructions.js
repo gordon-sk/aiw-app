@@ -15,10 +15,6 @@ export class PT2_Instructions extends Component {
 	}
   handlePress() {
 		this.props.navigation.navigate('Test', {
-			n: 2,
-			count: 0,
-			maxCount: 5,
-			scores:[],
 			test_name: 'PT2',
 		});
   }

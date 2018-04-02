@@ -28,6 +28,8 @@ export class PT1_Test extends React.Component {
 		targetLeft: null,
 
 		user_rotation: 0,
+		last_angle: 0,
+		touch_theta0: 0,
 		tapped: false,
 		score: 0,
 	}
@@ -55,27 +57,36 @@ export class PT1_Test extends React.Component {
 		  onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
 		  onPanResponderGrant: (evt, gestureState) => {
-				// The gesture has started. Show visual feedback so the user knows
-				// what is happening!
-					this.setState({lastTouch_t0: evt.nativeEvent.timestamp});
+				// The gesture has started.
+				// recording time
+				// recording 'first' last_angle
+				var x = evt.nativeEvent.pageX - this.state.screenX / 2;
+				var y = evt.nativeEvent.pageY - this.state.screenY / 2;
+				var theta = Math.atan2(y, x) * 180 / 3.14159265;
+				this.setState({
+					this_touch_t0: evt.nativeEvent.timestamp,
+					this_touch_theta0: theta,
+				});
 		  },
 			onPanResponderMove: (evt, gestureState) => {
-				var dT = evt.nativeEvent.timestamp - this.state.lastTouch_t0;
-				var old = true;
-				if (dT > 100 && old) {
+				var dT = evt.nativeEvent.timestamp - this.state.this_touch_t0;
+				if (dT > 100) {
+					// calculating the angle between origin and user's touch
 					var x = evt.nativeEvent.pageX - this.state.screenX / 2;
 					var y = evt.nativeEvent.pageY - this.state.screenY / 2;
 					var theta = Math.atan2(y, x) * 180 / 3.14159265;
+					var dTheta = theta - this.state.this_touch_theta0;
 					if (this.state.done_waiting && !this.state.tapped) {
-						this.setState({user_rotation: theta + this.state.random_rot_addition});
+						this.setState({
+							user_rotation: this.state.last_angle + dTheta,
+						});
 					}
 				}
 			},
 			onPanResponderTerminationRequest: (evt, gestureState) => true,
 		  onPanResponderRelease: (evt, gestureState) => {
-				// The user has released all touches while this view is the
-				// responder. This typically means a gesture has succeeded
-				var dT = evt.nativeEvent.timestamp - this.state.lastTouch_t0;
+				this.setState({last_angle: this.state.user_rotation });
+				var dT = evt.nativeEvent.timestamp - this.state.this_touch_t0;
 				var count = this.props.navigation.state.params.count + 1;
 				var scores = this.props.navigation.state.params.scores;
 				if (dT < 130 && !this.state.tapped && this.state.done_waiting) {
@@ -154,7 +165,7 @@ export class PT1_Test extends React.Component {
   }
 
 	record = (score) => {
-		var url = 'https://gskiesling.pythonanywhere.com/AIW/default/log_scores?';
+		var url = 'https://filtergraph.com/aiw/default/log_scores?';
 	  url += 'score=' + String(score)  + '&';
 	  url += 'test_name=PT1&'
 	  url += 'user_ID=' + global.user_ID + '&';

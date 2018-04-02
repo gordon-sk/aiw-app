@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, PanResponder } from 'react-native';
+import { add, precisionRound } from '../Components and Helpers/scoring_and_rounding';
 
 export class PT3_Conclusion extends Component {
 
@@ -7,19 +8,10 @@ export class PT3_Conclusion extends Component {
 			average: null,
 	}
 
-	// quick and dirty function that lets us sum the scores
-	add = (a, b) => {
-			return a + b;
-	}
-	precisionRound(number) {
-  	var factor = Math.pow(10, 1);
-  	return Math.round(number * factor) / factor;
-	}
-
 	componentWillMount() {
 		var scores = this.props.navigation.state.params.scores;
-		var average = scores.reduce(this.add, 0) / 10;
-		this.setState({average: this.precisionRound(average)});
+		var average = scores.reduce(add, 0) / 10;
+		this.setState({average: precisionRound(average)});
 		this._panResponder = PanResponder.create({
 		  // Ask to be the responder:
 		  onStartShouldSetPanResponder: (evt, gestureState) => true,

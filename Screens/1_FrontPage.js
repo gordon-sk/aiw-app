@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { logoSize } from '../Components and Helpers/ImageSizing';
+import { testInitialization } from '../Components and Helpers/testInit';
 
 // Class for the front page of the App
 // Standard react-native code... takes no props and only uses built-in components
@@ -23,8 +24,12 @@ export class Home extends Component {
     dims: logoSize(940, 198)
   }
 
+  componentWillMount() {
+    testInitialization();
+  }
+
   handleLogOut = () => {
-    var url = 'https://gskiesling.pythonanywhere.com/AIW/default/logout?';
+    var url = 'https://filtergraph.com/aiw/default/logout?';
     url += 'user_ID=' + global.user_ID + '&';
     url += 'key=' + global.key;
     fetch(url)
@@ -55,15 +60,6 @@ export class Home extends Component {
           <Button
             raised
             backgroundColor='#CCC'
-            color='black'
-            style={styles.button}
-            icon={{name: 'web', type: 'material-community'}}
-            onPress={() => Linking.openURL('https://my.vanderbilt.edu/autismandinnovation/')}
-            title='Visit our Website!'
-          />
-          <Button
-            raised
-            backgroundColor='#CCC'
       	    color='black'
             style={styles.button}
             icon={{name: 'puzzle-piece', type: 'font-awesome'}}
@@ -74,18 +70,25 @@ export class Home extends Component {
             raised
             backgroundColor='#CCC'
       	    color='black'
-            style={styles.button}
-            icon={{name: 'results', type: 'foundation'}}
-            onPress={() => this.props.navigation.navigate('Results_List')}
+            icon={{name: 'log-out', type: 'entypo'}}
+            onPress={() => this.handleLogOut()}
+            title='Log Out'
+          />
+          <Button
+            raised
+            backgroundColor='#CCC'
+            color='black'
+            icon={{name: 'book', type: 'entypo'}}
+            onPress={() => Linking.openURL('https://filtergraph.com/aiw')}
             title='View Previous Results'
           />
           <Button
             raised
             backgroundColor='#CCC'
-      	    color='black'
-            icon={{name: 'log-out', type: 'entypo'}}
-            onPress={() => this.handleLogOut()}
-            title='Log Out'
+            color='black'
+            icon={{name: 'web', type: 'material-community'}}
+            onPress={() => Linking.openURL('https://my.vanderbilt.edu/autismandinnovation/')}
+            title='Visit our Website'
           />
           <Image
             style={styles.uniImage}
@@ -112,14 +115,6 @@ export class Home extends Component {
           <Button
             raised
             backgroundColor='#CCC'
-            color='black'
-            icon={{name: 'web', type: 'material-community'}}
-            onPress={() => Linking.openURL('https://my.vanderbilt.edu/autismandinnovation/')}
-            title='Visit our Website!'
-          />
-          <Button
-            raised
-            backgroundColor='#CCC'
       	    color='black'
             icon={{name: 'md-create', type: 'ionicon'}}
             onPress={() => this.props.navigation.navigate('Registration')}
@@ -136,10 +131,10 @@ export class Home extends Component {
           <Button
             raised
             backgroundColor='#CCC'
-      	    color='black'
-            icon={{name: 'login', type: 'entypo'}}
-            onPress={() => this.props.navigation.navigate('TestingEnv')}
-            title='SKIP'
+            color='black'
+            icon={{name: 'web', type: 'material-community'}}
+            onPress={() => Linking.openURL('https://my.vanderbilt.edu/autismandinnovation/')}
+            title='Visit our Website'
           />
           <Image
             style={styles.uniImage}

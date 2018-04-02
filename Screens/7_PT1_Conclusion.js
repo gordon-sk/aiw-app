@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, PanResponder } from 'react-native';
+import { add, precisionRound } from '../Components and Helpers/scoring_and_rounding';
 
 export class PT1_Conclusion extends Component {
 
@@ -8,22 +9,12 @@ export class PT1_Conclusion extends Component {
 			pass: null,
 	}
 
-	// quick and dirty function that lets us sum the scores
-	add = (a, b) => {
-			return a + b;
-	}
-
-	precisionRound(number) {
-  	var factor = Math.pow(10, 1);
-  	return Math.round(number * factor) / factor;
-	}
-
 	componentWillMount() {
 		var scores = this.props.navigation.state.params.scores
-		var average = scores.reduce(this.add, 0) / 5;
+		var average = scores.reduce(add, 0) / 5;
 		this.setState({
 			pass: (average >= 95),
-			average: this.precisionRound(average)
+			average: precisionRound(average)
 		});
 		console.log('User passed PT1: ' + (average >= 95) +
 								" , score: " + average);

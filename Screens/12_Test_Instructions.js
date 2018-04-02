@@ -10,10 +10,6 @@ import { Button } from 'react-native-elements';
 export class Test_Instructions extends Component {
   handlePress() {
 		this.props.navigation.navigate('Test', {
-			n: 6,
-			count: 0,
-			maxCount: 106,
-			scores:[],
 			test_name: "Test",
 		});
   }

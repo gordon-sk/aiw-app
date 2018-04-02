@@ -5,14 +5,14 @@ import { testInitialization } from '../Components and Helpers/testInit';
 
 // TODO: Figure out what the psych people actually want
 export class ViewingInstructions extends Component {
-  
+
     componentDidMount() {
         testInitialization();
         this.backend_init();
     }
-    
+
     backend_init() {
-      var url = 'https://gskiesling.pythonanywhere.com/AIW/default/initiate_test?';
+      var url = 'https://filtergraph.com/aiw/default/initiate_test?';
       url += 'key=' + global.key + '&';
       url += 'user_ID=' + global.user_ID;
       fetch(url)
@@ -28,13 +28,13 @@ export class ViewingInstructions extends Component {
           }
       });
     }
-    
+
     render() {
       return (
         <View style={styles.container}>
           <View style={styles.inBetween}/>
           <Text>
-            On the next screen, you will place the facial outline over your 
+            On the next screen, you will place the facial outline over your
             face using this device's camera. Bill's example is displayed below:
           </Text>
           <Image
