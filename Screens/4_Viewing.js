@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Image, Dimensions, StyleSheet } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import { Button } from 'react-native-elements';
+import { NavigationActions } from 'react-navigation'
 
 // This screen uses built-in components as well as the expo camera component
 // An outline of a face is overlayed onto the user-facing camera,
@@ -10,6 +11,7 @@ import { Button } from 'react-native-elements';
 export class Viewing extends React.Component {
   state = {
     hasCameraPermission: null,
+    show_camera: true,
   };
   static NavOption = { title: 'Viewing' };
 
@@ -18,9 +20,13 @@ export class Viewing extends React.Component {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   }
+  handlePress() {
+    this.setState({show_camera: false});
+    this.props.navigation.navigate('PT1_Instructions');
+  }
+
   render() {
     const { hasCameraPermission } = this.state;
-    const { navigate } = this.props.navigation; // to travel forward
     const { goBack } = this.props.navigation;   // for going back
     // if no permission granted or denied, empty screen
     if (hasCameraPermission === null) {
@@ -30,42 +36,45 @@ export class Viewing extends React.Component {
       return <Text>No access to camera</Text>;
     // otherwise, we return the screen and image, with a button to continue
     // to screen 5
-    } else {
-      return (
-        <View style={{flex: 1}}>
-          <Camera
-            style={{flex: 1}}
-            type={Camera.Constants.Type.front} // specifying the camera we want
-            >
-            <View style={styles.imageView}>
-              <Image
-                source={require('../Pictures/face_outline.png')}
-                style={styles.face}
-                />
-            </View>
-            <View style={styles.buttonBottom}>
-              <View style={styles.buttonRow}>
-                <Button
-	                raised
-                  backgroundColor='#CCC'
-          	      color='black'
-  	              icon={{name: 'arrow-left', type: 'feather'}}
-                  onPress={() => goBack()}
-                  title='Go Back'
-                />
-                <Button
-  	              raised
-                  backgroundColor='#CCC'
-          	      color='black'
-    	            iconRight={{name: 'arrow-right', type: 'feather'}}
-                  onPress={() => navigate('PT1_Instructions')}
-                  title='Continue'
-                />
+    } else if (this.state.show_camera) {
+        return (
+          <View style={{flex: 1}}>
+            <Camera
+              style={{flex: 1}}
+              type={Camera.Constants.Type.front} // specifying the camera we want
+              >
+              <View style={styles.imageView}>
+                <Image
+                  source={require('../Pictures/face_outline.png')}
+                  style={styles.face}
+                  />
               </View>
-            </View>
-          </Camera>
-        </View>
-      );
+              <View style={styles.buttonBottom}>
+                <View style={styles.buttonRow}>
+                  <Button
+  	                raised
+                    backgroundColor='#CCC'
+            	      color='black'
+    	              icon={{name: 'arrow-left', type: 'feather'}}
+                    onPress={() => goBack()}
+                    title='Go Back'
+                  />
+                  <Button
+    	              raised
+                    backgroundColor='#CCC'
+            	      color='black'
+      	            iconRight={{name: 'arrow-right', type: 'feather'}}
+                    onPress={() => this.handlePress()}
+                    title='Continue'
+                  />
+                </View>
+              </View>
+            </Camera>
+          </View>
+        );
+      }
+    else {
+      return(null);
     }
   }
 }

@@ -13,34 +13,42 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export class TestingEnv extends React.Component {
+
+	renderstuff() {
+		list = [];
+		for (let x=0; x<global.barCoords.length; x++) {
+			list.push(
+				<View key={'bar_'+String(x)}>
+					<Image
+						source={require('../Pictures/download.png')}
+						style={{
+							top: global.barCoords[x].top,
+							left: global.barCoords[x].left,
+							width: 10,
+							height: 10,
+							position: 'absolute',
+						}}
+					/>
+				</View>
+			);
+		}
+		return list;
+	}
+
 	render() {
 		return(
-			<View>
-			<FormInput
-placeholder='BASIC FormInput'
-/>
-
-<FormInput
-placeholder='FormInput WITH ICON'
-leftIcon={
-	<Icon
-		name='user'
-		size={24}
-		color='black'
-	/>
-}
-/>
-
-<FormInput
-placeholder='FormInput WITH SHAKING EFFECT'
-shake={true}
-/>
-
-<FormInput
-placeholder='FormInput WITH ERROR MESSAGE'
-errorStyle={{ color: 'red' }}
-errorMessage='ENTER A VALID ERROR HERE'
-/>
+			<View style={styles.container}>
+				{this.renderstuff()}
+				<Image
+					source={require('../Pictures/download.png')}
+					style={{
+						top: 0,
+						left: 0,
+						width: 10,
+						height: 10,
+						position: 'absolute',
+					}}
+				/>
 			</View>
 		);
 	}

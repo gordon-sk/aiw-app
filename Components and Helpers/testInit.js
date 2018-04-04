@@ -5,8 +5,8 @@ import { Dimensions, Platform } from 'react-native';
 
 export function testInitialization() {
 	// sizing down the bars, if the screen is small
-	var ScreenX = Dimensions.get('window').height;
-  var ScreenY = Dimensions.get('window').width - 20; // to acount for martinTop
+	var ScreenX = Dimensions.get('window').width;
+  var ScreenY = Dimensions.get('window').height; // to acount for martinTop
 	if (ScreenX <= 303) {
 		var L = ScreenX / 3;
 	}
@@ -23,24 +23,22 @@ export function testInitialization() {
 	if (Platform.OS == 'ios') {
 		global.centerTranslate = centerTranslate + "%";
 	}
-
 	var barCoords = [];
+	var OriginX = Dimensions.get('window').width / 2;
+	var OriginY = Dimensions.get('window').height / 2;
+	var R = OriginX - 25;
 	if (ScreenX > 600) {
-		ScreenX = 600;
+		R = 275;
 	}
-	var R = (ScreenX / 2) - 25;
 	for (let theta=30; theta<=330; theta+=60) {
 		barCoords.push({
-	 		top:  (ScreenY/2) - 50 - R * Math.sin(theta * 3.14159265 / 180),
-	 		left: (ScreenX/2) - 50 - R * Math.cos(theta * 3.14159265 / 180),
+	 		top:  (ScreenY/2) - (R * Math.sin(theta * 3.14159265 / 180)) - L/2,
+	 		left: (Dimensions.get('window').width/2) - (R * Math.cos(theta * 3.14159265 / 180)) - L/2,
 	 		rot:  null,
 	 	});
 	}
 
 	global.barCoords = barCoords;
-
 	// to track scores
 	global.scores = {'PT1':[], 'PT2':[], 'PT3':[], 'Test':[]};
-	console.log(Dimensions.get('window'));
-	console.log(barCoords);
 }
