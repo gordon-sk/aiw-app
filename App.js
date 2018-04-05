@@ -21,8 +21,6 @@ import { Questionnaire } from './Screens/14_Post_experiment_questionnaire';
 import { Debrief } from './Screens/15_Debrief';
 import { Test } from './Screens/Test';
 
-import { TestingEnv } from './Screens/testtest';
-
 export default class App extends React.Component {
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
@@ -57,7 +55,6 @@ const AppNav = StackNavigator({
   Test_Conclusion: {screen: Test_Conclusion},
   Questionnaire: {screen: Questionnaire },
   Debrief: {screen: Debrief},
-  TestingEnv: {screen: TestingEnv},
 
   },
 

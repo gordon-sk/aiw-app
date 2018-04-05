@@ -38,7 +38,7 @@ export class ViewingInstructions extends Component {
             face using this device's camera. Bill's example is displayed below:
           </Text>
           <Image
-            source={require('../Pictures/billnye.png')}
+            source={require('../Pictures/Levitt.Headshot.png')}
             style={styles.pic}
           />
           <Button
