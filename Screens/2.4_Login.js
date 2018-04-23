@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { FormInput} from 'react-native-elements';
@@ -59,9 +59,11 @@ export class Login extends Component {
             else{
               console.log('unknown error occured during login from backend');
             }
-        }).catch((error) => {
-          console.error(error);
-        });
+          })
+          .catch((error) => {
+            console.error(error);
+            Alert('Something went wrong. Try checking your connection.');
+          });
     }
   }
 
@@ -79,18 +81,12 @@ export class Login extends Component {
               Please enter the email address you registered with below.
             </Text>
           </View>
-          <FormInput
+          <TextInput
+            style={styles.inputStyle}
             containerStyle={styles.inputStyle}
             keyboardType = 'email-address'
-            autoCorrect = {false}
             Value = {this.state.email}
             placeholder = 'you@example.com'
-            leftIcon={
-              <Icon
-                name='user'
-                size={24}
-                color='black'
-              />}
             onChangeText = {(text) => this.setState({email: text})}
           />
           <View style={styles.viewStyle}>
@@ -98,7 +94,7 @@ export class Login extends Component {
               Please enter your password.
             </Text>
           </View>
-          <FormInput
+          <TextInput
             style={styles.inputStyle}
             containerStyle={styles.inputStyle}
             keyboardType = 'default'
@@ -161,8 +157,10 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     backgroundColor: 'white',
-    width: Dimensions.get('window').width * .8,
-    borderRadius: .4
+    borderRadius: 3,
+    width: 200,
+    fontSize: 15,
+    textAlign: 'center',
   },
   textStyle: {
     textAlign: 'left',

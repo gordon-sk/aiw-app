@@ -31,7 +31,10 @@ export class Registration extends Component {
   }
 
   checkPassMatch = () => {
-    if (this.state.password1 != this.state.password2) {
+    if (this.state.password1 == null || this.state.password2 == null){
+      this.setState({badPass: false});
+    }
+    else if (this.state.password1 != this.state.password2) {
       this.setState({badPass: true});
     }
     else if (this.state.password2.length < 4 && this.state.password2 != null) {
@@ -43,7 +46,16 @@ export class Registration extends Component {
   }
 
   checkEmail = () => {
-    if (!this.state.email.includes('.') || !this.state.email.includes('@')) {
+    if (this.state.email == null) {
+      this.setState({badEmail: false});
+    }
+    else if (
+      !this.state.email.includes('.') ||
+      !this.state.email.includes('@') ||
+      this.state.email.split('@')[0] == '' ||
+      this.state.email.split('@')[1].split('.')[0] == '' ||
+      this.state.email.split('.')[1] == ''
+    ) {
         this.setState({badEmail: true});
         console.log("Clearly invalid email address entered: " + this.state.email);
     }
@@ -56,7 +68,7 @@ export class Registration extends Component {
     if (this.state.email == null || this.state.badEmail) {
       Alert.alert('Please enter an email address.');
     }
-    else if (this.state.badPass || this.state.password1 == null) {
+    else if (this.state.badPass || this.state.password1 == null || this.state.password2 == null) {
       Alert.alert('Please make sure your passwords match');
     }
     else {
@@ -83,9 +95,14 @@ export class Registration extends Component {
               this.setState({
                 password: null,
                 password2: null,
+                loading: false,
               });
             }
-        });
+          })
+          .catch((error) => {
+            console.error(error);
+            Alert('Something went wrong. Try checking your connection.');
+          });
       }
     }
   }
@@ -209,6 +226,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     backgroundColor: 'white',
+    borderRadius: 3,
     width: 200,
     fontSize: 15,
     textAlign: 'center',

@@ -74,7 +74,7 @@ export class Viewing extends React.Component {
         );
       }
     else {
-      return(null);
+      return(<View style={{backgroundColor: '#808080', flex:1}}/>);
     }
   }
 }

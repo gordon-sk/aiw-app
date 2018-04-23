@@ -7,7 +7,8 @@ import {
 	Dimensions,
 	StyleSheet,
 	Platform,
-	Text
+	Text,
+	Alert
 } from 'react-native';
 import { acc_helper } from '../Components and Helpers/acc_helper';
 import { theta_calc } from '../Components and Helpers/theta_calc';
@@ -41,14 +42,17 @@ export class Test extends React.Component {
 				global.barCoords[index].rot = Math.random() * 360;
 			}
 		}
+		var new_angle = Math.random() * 360;
 		this.setState({
 			target_index: targetIndex,
 			indexes: indexes,
 			count: count,
+			user_rotation: new_angle,
+      last_angle: new_angle
 		});
 
 		// doing the timing
-		// setTimeout(() => {func}, t);
+		// setTimeout(() => {func}, t);   is the correct syntax
 		setTimeout(() => {this.setState({done_waiting: true})}, 3500);
 		setTimeout(() => {this.setState({bar_space: 0})}, 1500);
 		setTimeout(() => {this.setState({bar_space: 9999})}, 1700);
@@ -86,7 +90,6 @@ export class Test extends React.Component {
 			scores: [],
 			bar_space: 9999,
 			circle_space: 9999,
-			last_angle: 0,
 		});
 
 		this._panResponder = PanResponder.create({
@@ -123,12 +126,12 @@ export class Test extends React.Component {
 			},
 			onPanResponderTerminationRequest: (evt, gestureState) => true,
 			onPanResponderRelease: (evt, gestureState) => {
-				// touch is finished -- user has lifted his hand
-				// first we record the last angle touched at
-				// this keeps future movements smooth and prevents the bar
-				// from jumping around
+				// Touch is finished -- user has lifted his hand.
+				// First we record the last angle the user touched at.
+				// This keeps future movements smooth and prevents the bar
+				// from jumping around.
 				this.setState({last_angle: this.state.user_rotation });
-				// time calculation...
+				// Time calculation...
 				var dT = evt.nativeEvent.timestamp - this.state.this_touch_t0;
 				// if it WAS a tap, the user hasn't tapped before, and
 				// the waiting period for the bar is over:
@@ -167,8 +170,12 @@ export class Test extends React.Component {
 		fetch(url)
 			.then((response) => response.text())
 			.then((responseText) => {
-			console.log("backend receipt: " + this.state.test_name + ", screen "
-			+ String(count) + ", score " + String(score) + ': ' + responseText);
+				console.log("backend receipt: " + this.state.test_name + ", screen "
+				+ String(count) + ", score " + String(score) + ': ' + responseText);
+			})
+			.catch((error) => {
+				console.error(error);
+				Alert("Something went wrong. Please check your connection.");
 			});
 		return score;
 	}
@@ -254,6 +261,13 @@ export class Test extends React.Component {
 				<View style={styles.imagesView}>
 					{this.renderImages()}
 				</View>
+				<View style={styles.instructions}>
+          <Text>
+            {
+							(this.state.count == 1 && this.state.test_name == 'PT2') ?
+							'The circle indicates which bar to emulate' : null}
+          </Text>
+        </View>
 			</View>
 		);
 	}
@@ -275,4 +289,12 @@ const styles = StyleSheet.create({
 		flex: 1,
 		position:'absolute',
 	},
+	instructions: {
+		position: 'absolute',
+		top: '90%',
+		left: 0, // I know these are defaulted to 0 anyways
+		right: 0, // for some reason removing them uncenters the text
+		bottom: 0, // recommend you keep them
+		alignItems: 'center',
+  },
 });

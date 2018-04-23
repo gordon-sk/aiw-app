@@ -5,7 +5,8 @@ import { StackNavigator } from 'react-navigation';
 import { Home } from './Screens/1_FrontPage';
 import { Registration } from './Screens/2.1_Registration';
 import { Subject } from './Screens/2.2_SubjectInfo';
-import { Login } from './Screens/2.3_Login';
+import { Info_Confirm } from './Screens/2.3_Confirm';
+import { Login } from './Screens/2.4_Login';
 import { ViewingInstructions } from './Screens/3_ViewingInstructions';
 import { Viewing } from './Screens/4_Viewing';
 import { PT1_Instructions } from './Screens/5_PT1_Instructions';
@@ -40,6 +41,7 @@ const AppNav = StackNavigator({
   Home: { screen: Home },
   Registration: {screen: Registration},
   Subject: {screen: Subject},
+  Info_Confirm: {screen: Info_Confirm},
   Login: {screen: Login},
   ViewingInstructions: {screen: ViewingInstructions},
   Viewing: {screen: Viewing},

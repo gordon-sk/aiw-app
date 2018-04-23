@@ -60,11 +60,11 @@ export class PT1_Conclusion extends Component {
 		else {
 			return(
 				<View style={styles.container} {...this._panResponder.panHandlers}>
-					<Text>
+					<Text style={styles.instructionText}>
 						Average Accuracy: {this.state.average} percent
 						(average must be at least 95%)
 					</Text>
-					<Text>
+					<Text style={styles.instructionText}>
 						Tap anywhere to try again
 					</Text>
 				</View>

@@ -3,7 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
-  Image
+  Image,
+  Dimensions
 } from 'react-native';
 import { Button } from 'react-native-elements';
 
@@ -24,11 +25,13 @@ export class PT1_Instructions extends Component {
         <View>
           <Image
             source={require('../Pictures/instructions.png')}
+            style={styles.picture}
+            resizeMode={'contain'}
           />
         </View>
         <View>
           <Text style={styles.instructionText}>
-            Scroll along the screen to adjust the angle of the central line,
+            Use one finger to scroll along the screen to adjust the angle of the central line,
             so it matches the angle of the other line. They should be
             parallel. Be as accurate as you can. To pass this test,
             your accuracy must be greater than 95%
@@ -68,8 +71,10 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
     fontSize: 20,
-    padding: 10,
     textAlign: 'center',
+  },
+  picture: {
+    height: Dimensions.get('window').height * .5
   },
   instructionText: {
     padding: 10,

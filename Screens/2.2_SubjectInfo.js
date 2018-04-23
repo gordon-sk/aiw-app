@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
   Platform,
+  Dimensions,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Button } from 'react-native-elements';
@@ -23,6 +24,9 @@ export class Subject extends Component {
     gender: null,
     ethnicity: null,
     education: null,
+    genHeight: 150,
+    EduHeight: 300,
+    EduHeight: 300,
     keyboardType: 'default',
     genderD: {0: 'Male', 1: 'Female', 2: 'Unknown / Choose not to Report'},
     EthD: {
@@ -46,15 +50,6 @@ export class Subject extends Component {
     },
   }
 
-  componentDidMount() {
-    if (Platform.OS == 'ios') {
-      this.setState({keyboardType: 'numeric'});
-    }
-    else if (Platform.OS == 'android') {
-      this.setState({keyboardType: 'numeric'});
-    }
-  }
-
   handleContinue = () => {
     if (this.state.age == null) {
       Alert.alert("Please enter your age.");
@@ -72,45 +67,20 @@ export class Subject extends Component {
       Alert.alert('Age should not contain a decimal.')
     }
     else {
-      Alert.alert(
-        'Continue',
-        'You will not be able to edit this information after leaving this page. Continue?',
-        [
-          {text: 'Cancel', onPress: () => {}, style: 'cancel'},
-          {text: 'Continue', onPress: () => { this.record_and_continue() }},
-        ],
-      { cancelable: true });
+      this.continue();
     }
   }
 
-  record_and_continue = () => {
-    this._record();
-    this.props.navigation.navigate('Home');
-    console.log('user age: ' + this.state.age);
-    console.log('user gender: ' + this.state.gender);
-    console.log('user ethnicity: ' + this.state.ethnicity);
-    console.log('user education: ' + this.state.education);
-  }
-
-  _record = () => {
-    var url = 'https://filtergraph.com/aiw/default/bio_call?';
-    url += 'age=' + String(this.state.age) + '&';
-    url += 'gender=' + this.state.gender + "&";
-    url += 'ethnicity=' + this.state.ethnicity + "&";
-    url += 'education=' + this.state.education + '&';
-    url += 'user_ID=' + global.user_ID + "&";
-    url += 'key=' + global.key;
-    return fetch(url)
-      .then((response) => response.text())
-      .then((responseText) => {
-        console.log('Receipt of bio info backend: ' + String(responseText));
-    });
-  }
-
-  handleGoBack = () => {
-    const { goBack } = this.props.navigation;
-    Alert.alert("All entered information will be deleted");
-    goBack();
+  continue() {
+    this.props.navigation.navigate(
+      'Info_Confirm',
+      {
+        age: this.state.age,
+        gender: this.state.gender,
+        education: this.state.education,
+        ethnicity: this.state.ethnicity,
+      }
+    );
   }
 
   render() {
@@ -143,8 +113,8 @@ export class Subject extends Component {
             <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
-                dropdownStyle={styles.dropDown}
-                dropdownTextStyle={styles.dropText}
+                dropdownStyle={{height: this.state.genHeight}}
+                dropdownTextStyle={styles.dropdownText}
                 options={[
                   this.state.genderD[0],
                   this.state.genderD[1],
@@ -157,8 +127,8 @@ export class Subject extends Component {
             <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
-                dropdownStyle={styles.dropDown}
-                dropdownTextStyle={styles.dropText}
+                dropdownStyle={{height: this.state.EthHeight}}
+                dropdownTextStyle={styles.dropdownText}
                 options={[
                   this.state.EthD[0],
                   this.state.EthD[1],
@@ -176,8 +146,8 @@ export class Subject extends Component {
             <ModalDropdown
                 style={styles.drop}
                 textStyle={styles.dropText}
-                dropdownStyle={styles.dropDown}
-                dropdownTextStyle={styles.dropText}
+                dropdownStyle={{height: this.state.EduHeight}}
+                dropdownTextStyle={styles.dropdownText}
                 options={[
                   this.state.EduD[0],
                   this.state.EduD[1],
@@ -199,16 +169,6 @@ export class Subject extends Component {
               title='Continue'
             />
           </View>
-          <View>
-            <Button
-	            raised
-              backgroundColor='#CCC'
-      	      color='black'
-	            icon={{name: 'home-circle', type: 'material-community'}}
-              onPress={() => this.handleGoBack()}
-              title='Go Back'
-            />
-          </View>
         </ScrollView>
       </View>
 
@@ -221,7 +181,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#808080',
     flex: 1,
     justifyContent: 'space-between',
-    marginTop: 25,
+    marginVertical: 25,
     alignItems: 'center',
     paddingVertical: 15,
   },
@@ -248,6 +208,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderColor: 'black',
     borderWidth: 1,
+    borderRadius: 3,
     backgroundColor: 'white',
     width: 200,
     fontSize: 15,
@@ -255,25 +216,28 @@ const styles = StyleSheet.create({
   },
   drop: {
     borderWidth: 1,
+    borderRadius: 3,
     borderColor: 'black',
     backgroundColor: 'white',
-    width: 150,
-    height: 40,
+    width: Dimensions.get('window').width * .7,
+    height: 45,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dropText: {
-    fontSize: 15,
+    fontSize: 18,
     textAlign: 'center',
+    textAlignVertical: 'center',
+    width: Dimensions.get('window').width * .7,
   },
-  dropDown: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 150,
+  dropdownText: {
+    fontSize: 18,
+    width: Dimensions.get('window').width * .7,
   },
   button: {
     backgroundColor: "#CCC",
     fontWeight: 'bold',
     color: 'black',
   },
+
 });

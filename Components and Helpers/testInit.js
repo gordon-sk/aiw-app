@@ -6,7 +6,7 @@ import { Dimensions, Platform } from 'react-native';
 export function testInitialization() {
 	// sizing down the bars, if the screen is small
 	var ScreenX = Dimensions.get('window').width;
-  var ScreenY = Dimensions.get('window').height; // to acount for martinTop
+  var ScreenY = Dimensions.get('window').height;
 	if (ScreenX <= 303) {
 		var L = ScreenX / 3;
 	}
@@ -34,7 +34,7 @@ export function testInitialization() {
 		barCoords.push({
 	 		top:  (ScreenY/2) - (R * Math.sin(theta * 3.14159265 / 180)) - L/2,
 	 		left: (Dimensions.get('window').width/2) - (R * Math.cos(theta * 3.14159265 / 180)) - L/2,
-	 		rot:  null,
+	 		rot:  Math.random() * 360,
 	 	});
 	}
 

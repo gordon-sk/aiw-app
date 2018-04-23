@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	Dimensions,
 	ScrollView,
+	Alert,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -34,13 +35,12 @@ export class Questionnaire extends Component {
   	fetch(url)
   		.then((response) => response.text())
   	  .then((responseText) => {
-  	  	if (responseText != 'questionnaire answers logged successfully') {
-  	  		console.log('bad questionnaire backend response: ' + responseText);
-  	  	}
-  	  	else {
   	  		console.log(responseText);
-  	  	}
-  	  });
+  	  })
+			.catch((error) => {
+        console.error(error);
+        Alert('Something went wrong. Try checking your connection.');
+      });
   }
 
 	render() {
@@ -65,8 +65,9 @@ export class Questionnaire extends Component {
 						</Text>
 						<View style={styles.inbetween}/>
 						<ModalDropdown
-	            style={styles.drop}
-	            dropdownStyle={styles.dropDown}
+							style={styles.drop}
+							textStyle={styles.dropText}
+							dropdownStyle={styles.dropDown}
 							dropdownTextStyle={styles.dropText}
 	            options={[
 	              '0 - Not engaged', '1', '2', '3', '4', '5 - Moderately',
@@ -82,9 +83,10 @@ export class Questionnaire extends Component {
 						</Text>
 						<View style={styles.inbetween}/>
 						<ModalDropdown
-	            style={styles.drop}
-	            dropdownStyle={styles.dropDown}
-	            dropdownTextStyle={styles.dropText}
+							style={styles.drop}
+							textStyle={styles.dropText}
+							dropdownStyle={styles.dropDown}
+							dropdownTextStyle={styles.dropText}
 	            options={[
                 '0 - Not difficult at all', '1', '2', '3', '4',
 	              '5 - Moderately difficult',
@@ -168,19 +170,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     height: 100,
   },
-  drop: {
+	drop: {
     borderWidth: 1,
+    borderRadius: 3,
     borderColor: 'black',
     backgroundColor: 'white',
-    width: 150,
-    height: 40,
+    width: Dimensions.get('window').width * .7,
+    height: 45,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dropDown: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: -1,
-    height: -1,
+  dropText: {
+    fontSize: 18,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    width: Dimensions.get('window').width * .7,
+  },
+  dropdownText: {
+    fontSize: 18,
+    width: Dimensions.get('window').width * .7,
+  },
+  button: {
+    backgroundColor: "#CCC",
+    fontWeight: 'bold',
+    color: 'black',
   },
 });

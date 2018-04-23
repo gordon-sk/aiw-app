@@ -6,21 +6,18 @@ import {
   StyleSheet,
   Linking,
   Dimensions,
+  Alert
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { logoSize } from '../Components and Helpers/ImageSizing';
+// i mport { testInitialization } from '../Components and Helpers/testInit';
 
 // Class for the front page of the App
 // Standard react-native code... takes no props and only uses built-in components
-// Header image
-// Header Text
-// Link to website
-// Link to register
-// Link to Login
-// Vanderbilt Uni logo
 export class Home extends Component {
   state = {
-    dims: logoSize(940, 198)
+    dims: logoSize(940, 198),
+    url: 'https://filtergraph.com/aiw/default/results?user_ID=' + global.user_ID + '&key=' + global.key
   }
 
   handleLogOut = () => {
@@ -31,12 +28,20 @@ export class Home extends Component {
       .then((response) => response.text())
       .then((responseText) => {
         console.log('logout receipt: ' + responseText);
+      })
+      .catch((error) => {
+        console.error(error);
+        Alert('Something went wrong. Try checking your connection.');
       });
     global.user_ID = null;
     global.key = null;
     global.user = null;
     this.props.navigation.navigate('Home');
   }
+
+  // componentDidMount() {
+  //   testInitialization();
+  // }
 
   render() {
     if (global.user != null) {
@@ -74,7 +79,7 @@ export class Home extends Component {
             backgroundColor='#CCC'
             color='black'
             icon={{name: 'book', type: 'entypo'}}
-            onPress={() => Linking.openURL('https://filtergraph.com/aiw')}
+            onPress={() => Linking.openURL(this.state.url)}
             title='View Previous Results'
           />
           <Button

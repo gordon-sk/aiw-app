@@ -17,6 +17,7 @@ export class ViewingInstructions extends Component {
       url += 'user_ID=' + global.user_ID;
       fetch(url)
         .then((response) => response.text())
+        .catch(error => console.error('Error', error))
         .then((responseText) => {
           console.log('Receipt of backend response: ' + responseText);
           if (responseText.slice(0, 14) == 'test initiated') {
@@ -24,22 +25,32 @@ export class ViewingInstructions extends Component {
           }
           else {
             console.log('Something went wrong on the backend.');
-            // maybe throw error to user, inform them scores won't be recorded...
+            this.error_handler();
           }
+      })
+      .catch((error) => {
+        console.error(error);
+        this.error_handler();
       });
+    }
+
+    error_handler() {
+      Alert('Something went wrong. Please try again.');
+      this.props.navigation.navigate("Home");
     }
 
     render() {
       return (
         <View style={styles.container}>
           <View style={styles.inBetween}/>
-          <Text>
+          <Text style={styles.text}>
             On the next screen, you will place the facial outline over your
-            face using this device's camera. Bill's example is displayed below:
+            face using this device's camera. Alexa's example is displayed below:
           </Text>
           <Image
             source={require('../Pictures/Levitt.Headshot.png')}
             style={styles.pic}
+            resizeMode={'contain'}
           />
           <Button
             raised
@@ -56,18 +67,23 @@ export class ViewingInstructions extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#808080',
-      marginTop: 20,
-      alignItems: 'center',
-      justifyContent: 'space-between',
+  container: {
+    flex: 1,
+    backgroundColor: '#808080',
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  text: {
+    width: Dimensions.get('window').width * .9,
+    textAlign: 'center',
+    fontSize: 16,
   },
   pic: {
-    maxWidth: '100%',
-    height: Dimensions.get('window').height / 2
+    height: Dimensions.get('window').height * .6
   },
   inBetween: {
     marginVertical: 15,
+    borderRadius: 50,
   }
 });
