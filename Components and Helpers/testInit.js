@@ -40,5 +40,4 @@ export function testInitialization() {
 
 	global.barCoords = barCoords;
 	// to track scores
-	global.scores = {'PT1':[], 'PT2':[], 'PT3':[], 'Test':[]};
 }

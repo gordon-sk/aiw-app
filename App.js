@@ -2,25 +2,27 @@ import React from 'react';
 import { BackHandler } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
-import { Home } from './Screens/1_FrontPage';
-import { Registration } from './Screens/2.1_Registration';
-import { Subject } from './Screens/2.2_SubjectInfo';
-import { Info_Confirm } from './Screens/2.3_Confirm';
-import { Login } from './Screens/2.4_Login';
-import { ViewingInstructions } from './Screens/3_ViewingInstructions';
-import { Viewing } from './Screens/4_Viewing';
-import { PT1_Instructions } from './Screens/5_PT1_Instructions';
-import { PT1_Test } from './Screens/6_PT1_Test';
-import { PT1_Conclusion } from './Screens/7_PT1_Conclusion';
-import { PT2_Instructions } from './Screens/8_PT2_Instructions';
-import { PT2_Conclusion } from './Screens/9_PT2_Conclusion';
-import { PT3_Instructions } from './Screens/10_PT3_Instructions';
-import { PT3_Conclusion } from './Screens/11_PT3_Conclusion';
-import { Test_Instructions } from './Screens/12_Test_Instructions';
-import { Test_Conclusion } from './Screens/13_Test_Conclusion';
-import { Questionnaire } from './Screens/14_Post_experiment_questionnaire';
-import { Debrief } from './Screens/15_Debrief';
-import { Test } from './Screens/Test';
+import { Home } from './misc_screens/FrontPage';
+import { Registration } from './misc_screens/Registration';
+import { Subject } from './misc_screens/SubjectInfo';
+import { Info_Confirm } from './misc_screens/Confirm';
+import { Login } from './misc_screens/Login';
+import { TestChoice } from './misc_screens/TestChoice';
+import { Questionnaire } from './misc_screens/Post_experiment_questionnaire';
+import { Debrief } from './misc_screens/Debrief';
+
+import { PT1_Instructions } from './bars_and_gratings_screens/PT1_Instructions';
+import { PT1_Test } from './bars_and_gratings_screens/PT1_Test';
+import { PT1_Conclusion } from './bars_and_gratings_screens/PT1_Conclusion';
+import { PT2_Instructions } from './bars_and_gratings_screens/PT2_Instructions';
+import { PT2_Conclusion } from './bars_and_gratings_screens/PT2_Conclusion';
+import { PT3_Instructions } from './bars_and_gratings_screens/PT3_Instructions';
+import { PT3_Conclusion } from './bars_and_gratings_screens/PT3_Conclusion';
+import { Test_Instructions } from './bars_and_gratings_screens/Test_Instructions';
+import { Test } from './bars_and_gratings_screens/Test';
+import { Test_Conclusion } from './bars_and_gratings_screens/Test_Conclusion';
+
+
 
 export default class App extends React.Component {
   componentDidMount() {
@@ -43,8 +45,7 @@ const AppNav = StackNavigator({
   Subject: {screen: Subject},
   Info_Confirm: {screen: Info_Confirm},
   Login: {screen: Login},
-  ViewingInstructions: {screen: ViewingInstructions},
-  Viewing: {screen: Viewing},
+  TestChoice: {screen: TestChoice},
   PT1_Instructions: {screen: PT1_Instructions},
   PT1_Test: {screen: PT1_Test},
   PT1_Conclusion: {screen: PT1_Conclusion},

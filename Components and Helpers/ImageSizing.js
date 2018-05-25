@@ -1,3 +1,5 @@
+// https://stackoverflow.com/questions/48754904/funky-image-positioning-in-react-native
+
 import {Dimensions} from 'react-native';
 
 export function logoSize(width, height) {
