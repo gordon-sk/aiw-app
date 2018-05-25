@@ -4,14 +4,57 @@ import {
   Text,
   StyleSheet,
   Image,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import { Button } from 'react-native-elements';
+import { testInitialization } from '../Components and Helpers/testInit';
 
 export class PT1_Instructions extends Component {
+
+  componentWillMount() {
+    testInitialization();
+  }
+
+  handlePress() {
+    this.backend_init();
+  }
+
+  backend_init() {
+     var test_type = this.props.navigation.state.params.test_type;
+     console.log(test_type);
+     var url = 'https://filtergraph.com/aiw/default/initiate_test?';
+     url += 'key=' + global.key + '&';
+     url += 'user_ID=' + global.user_ID + '&';
+     url += 'test_type' + test_type;
+     fetch(url)
+       .then((response) => response.text())
+       .catch(error => console.error('Error', error))
+       .then((responseText) => {
+         console.log('Receipt of backend response: ' + responseText);
+         if (responseText.slice(0, 14) == 'test initiated' || true) {
+           global.test_ID = responseText.slice(26);
+           this.props.navigation.navigate(
+             'PT1_Test', {count:0, scores: [], test_type: test_type }
+           );
+         }
+         else {
+           console.log('Something went wrong on the backend.');
+           this.error_handler();
+         }
+     })
+     .catch((error) => {
+       console.error(error);
+       this.error_handler();
+     });
+   }
+
+   error_handler() {
+     Alert.alert('Something went wrong. Please try again.');
+     //this.props.navigation.navigate("Home");
+   }
+
   render() {
-    const { navigate } = this.props.navigation;
-    const { goBack } = this.props.navigation;
     return (
       <View style={styles.container}>
         <View>
@@ -45,7 +88,7 @@ export class PT1_Instructions extends Component {
             backgroundColor='#CCC'
     	      color='black'
             iconRight={{name: 'arrow-right', type: 'feather'}}
-            onPress={() => navigate('PT1_Test', {count: 0, scores: []})}
+            onPress={() => this.handlePress()}
             title='Start Practice Trials'
           />
         </View>

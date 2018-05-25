@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { logoSize } from '../Components and Helpers/ImageSizing';
-// i mport { testInitialization } from '../Components and Helpers/testInit';
+// import { testInitialization } from '../Components and Helpers/testInit';
 
 // Class for the front page of the App
 // Standard react-native code... takes no props and only uses built-in components
@@ -151,6 +151,14 @@ export class Home extends Component {
             icon={{name: 'shield', type: 'font-awesome'}}
             onPress={() => Linking.openURL('https://filtergraph.com/aiw/default/privacy')}
             title='View Privacy Police'
+          />
+          <Button
+            raised
+            backgroundColor='#CCC'
+      	    color='black'
+            icon={{name: 'login', type: 'entypo'}}
+            onPress={() => this.props.navigation.navigate('TestChoice')}
+            title='DEV SKIP'
           />
           <Image
             style={styles.uniImage}

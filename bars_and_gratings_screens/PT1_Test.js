@@ -9,6 +9,8 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
+import { Audio } from 'expo';
+import { Icon } from 'react-native-elements'
 import { acc_helper } from '../Components and Helpers/acc_helper';
 import { theta_calc } from '../Components and Helpers/theta_calc';
 
@@ -33,6 +35,7 @@ export class PT1_Test extends React.Component {
   }
 
   componentWillMount() {
+    console.log(this.props.navigation.state.params.test_type);
     this.setState({
       done_waiting: false,
       target_index: 0,
@@ -40,15 +43,17 @@ export class PT1_Test extends React.Component {
       user_rotation: 0,
       scores: [],
       count: 0,
+      is_bar_test: this.props.navigation.state.params.test_type == 'bars',
     });
+
     this._panResponder = PanResponder.create({
 
 			// boring, procedural code
 			// Did I copy and paste this from the react-native docs? Maybe.
 			onStartShouldSetPanResponder: (evt, gestureState) => true,
-			onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-			onMoveShouldSetPanResponder: (evt, gestureState) => true,
-			onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+			onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+			onMoveShouldSetPanResponder: (evt, gestureState) => false,
+			onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
 			onPanResponderReject: (evt, gestureState) => {},
 
 			// The good stuff
@@ -62,10 +67,9 @@ export class PT1_Test extends React.Component {
 		  },
 			onPanResponderMove: (evt, gestureState) => {
 				// the user is moving his finger
-				var dT = evt.nativeEvent.timestamp - this.state.this_touch_t0;
 				// we won't execute any calculations until the touch is longer
 				// than just a tap
-				if (dT > 100 && !this.state.tapped) {
+				if (!this.state.tapped) {
 					var theta = theta_calc(evt.nativeEvent);
 					var dTheta = theta - this.state.this_touch_theta0;
 					if (this.state.done_waiting && !this.state.tapped) {
@@ -76,29 +80,10 @@ export class PT1_Test extends React.Component {
 			onPanResponderTerminationRequest: (evt, gestureState) => true,
 			onPanResponderRelease: (evt, gestureState) => {
 				// Touch is finished -- user has lifted his hand.
-				// First we record the last angle the user touched at.
+				// We record the last angle the user touched at.
 				// This keeps future movements smooth and prevents the bar
 				// from jumping around.
 				this.setState({last_angle: this.state.user_rotation });
-				// Time calculation...
-				var dT = evt.nativeEvent.timestamp - this.state.this_touch_t0;
-				// if it WAS a tap, the user hasn't tapped before, and
-				// the waiting period for the bar is over:
-				if (dT <= 100 && !this.state.tapped && this.state.done_waiting) {
-					this.setState({tapped: true});
-          this.handleScoring();
-				}
-        else if (dT <= 100 && this.state.tapped) {
-          if (this.state.count == 5) {
-            this.props.navigation.navigate(
-              'PT1_Conclusion',
-              {scores: this.state.scores}
-            );
-          }
-          else {
-            this.reset();
-          }
-        }
 			},
 			onPanResponderTerminate: (evt, gestureState) => {},
 			onShouldBlockNativeResponder: (evt, gestureState) => {return true;},
@@ -109,6 +94,19 @@ export class PT1_Test extends React.Component {
     this.reset();
   }
 
+  handleTap() {
+    this.handleScoring();
+    if (this.state.count == 5) {
+      this.props.navigation.navigate(
+        'PT1_Conclusion',
+        {scores: this.state.scores}
+      );
+    }
+    else {
+      this.reset();
+    }
+  }
+
   handleScoring() {
     var score = acc_helper(
       global.barCoords[this.state.target_index].rot,
@@ -116,10 +114,21 @@ export class PT1_Test extends React.Component {
     );
     this.record(score);
     this.state.scores.push(score);
+    if (score >= 90 && global.give_bar_feedback) {
+      this.handlePlaySoundAsync();
+    }
     this.setState({
       bottom_text: 'Accuracy ' + score + "% (average must be at least 95%)\n\nTap to continue.",
     });
   }
+
+  handlePlaySoundAsync = async () => {
+    await Audio.setIsEnabledAsync(true);
+    let sound = new Audio.Sound();
+    await sound.loadAsync(require('../assets/success.wav'));
+    await sound.playAsync();
+  };
+
 
   record = (score) => {
 		var url = 'https://filtergraph.com/aiw/default/log_scores?';
@@ -128,7 +137,6 @@ export class PT1_Test extends React.Component {
 	  url += 'user_ID=' + global.user_ID + '&';
 	  url += 'test_ID=' + global.test_ID + '&'
 	  url += 'key=' + global.key;
-		global.scores['PT1'].push(score);
 		return fetch(url)
 		  .then((response) => response.text())
 		  .then((responseText) => {
@@ -143,10 +151,16 @@ export class PT1_Test extends React.Component {
   }
 
   renderUserBar() {
+    if (this.state.is_bar_test) {
+      var image = '../Pictures/bar.png';
+    }
+    else {
+      var image = '../Pictures/grating.png';
+    }
     return(
 			<View>
 				<Image
-					source={require('../Pictures/bar.png')}
+					source={require(image)}
 					style={{
 						transform: [
 							{rotate: this.state.user_rotation + 'deg'}
@@ -211,9 +225,15 @@ export class PT1_Test extends React.Component {
           {this.renderTargetBar()}
         </View>
         <View style={styles.instructions}>
-          <Text>
-            {this.state.count == 1 ? 'Use finger to make bars parallel, then tap' : null}
+          <Text style={{marginBottom: 7}}>
+            {this.state.count == 1 ? 'Use finger to make bars parallel, then tap the button' : null}
           </Text>
+          <Icon
+            reverse
+            name='arrow-forward'
+            type='materialicon'
+            onPress={() => this.handleTap()}
+          />
         </View>
       </View>
     );
@@ -232,12 +252,12 @@ const styles = StyleSheet.create({
 	  top: '50%',
 	  left: '50%',
 		...Platform.select({
-		ios: {
-			transform: [{translate: ['-50%','-50%']}],
-		},
-		android: {
-			transform: [{translate: [-50,-50]}],
-		},
+		  ios: {
+        transform: [{translate: ['-50%','-50%']}],
+		  },
+		  android: {
+			  transform: [{translate: [-50,-50]}],
+		  },
 		})
 	},
   scoreView: {
@@ -247,7 +267,10 @@ const styles = StyleSheet.create({
   },
   instructions: {
     flex: 1,
-    top: Dimensions.get('window').height * .9,
     alignItems: 'center',
+    top: '80%',
+  },
+  button: {
+    width: '80%'
   },
 });
