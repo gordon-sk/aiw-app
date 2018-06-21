@@ -63,7 +63,7 @@ export class Home extends Component {
       	    color='black'
             style={styles.button}
             icon={{name: 'puzzle-piece', type: 'font-awesome'}}
-            onPress={() => this.props.navigation.navigate('ViewingInstructions')}
+            onPress={() => this.props.navigation.navigate('TestChoice')}
             title='Begin Test'
           />
           <Button
@@ -151,14 +151,6 @@ export class Home extends Component {
             icon={{name: 'shield', type: 'font-awesome'}}
             onPress={() => Linking.openURL('https://filtergraph.com/aiw/default/privacy')}
             title='View Privacy Police'
-          />
-          <Button
-            raised
-            backgroundColor='#CCC'
-      	    color='black'
-            icon={{name: 'login', type: 'entypo'}}
-            onPress={() => this.props.navigation.navigate('TestChoice')}
-            title='DEV SKIP'
           />
           <Image
             style={styles.uniImage}

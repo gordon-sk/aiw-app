@@ -24,7 +24,7 @@ export class TestChoice extends React.Component {
     }
     else if (val=='colors') {
       this.props.navigation.navigate(
-        '', {test_type: 'colors'}
+        'Color_Test', {test_type: 'colors'}
       );
     }
   }

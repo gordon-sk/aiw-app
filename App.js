@@ -22,6 +22,8 @@ import { Test_Instructions } from './bars_and_gratings_screens/Test_Instructions
 import { Test } from './bars_and_gratings_screens/Test';
 import { Test_Conclusion } from './bars_and_gratings_screens/Test_Conclusion';
 
+import { Color_Test } from './color_test_screens/Color_Test';
+
 
 
 export default class App extends React.Component {
@@ -46,6 +48,7 @@ const AppNav = StackNavigator({
   Info_Confirm: {screen: Info_Confirm},
   Login: {screen: Login},
   TestChoice: {screen: TestChoice},
+
   PT1_Instructions: {screen: PT1_Instructions},
   PT1_Test: {screen: PT1_Test},
   PT1_Conclusion: {screen: PT1_Conclusion},
@@ -56,6 +59,9 @@ const AppNav = StackNavigator({
   Test_Instructions: {screen: Test_Instructions},
   Test: {screen: Test},
   Test_Conclusion: {screen: Test_Conclusion},
+
+  Color_Test: {screen: Color_Test},
+
   Questionnaire: {screen: Questionnaire },
   Debrief: {screen: Debrief},
 

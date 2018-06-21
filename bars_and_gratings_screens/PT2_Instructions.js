@@ -30,8 +30,6 @@ export class PT2_Instructions extends Component {
     this._scrollView = scrollView;
   };
 
-
-
 	render() {
 		return (
 			<View style={styles.container}>

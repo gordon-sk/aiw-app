@@ -43,7 +43,7 @@ export class PT1_Test extends React.Component {
       user_rotation: 0,
       scores: [],
       count: 0,
-      is_bar_test: this.props.navigation.state.params.test_type == 'bars',
+      give_feedback: this.props.navigation.state.params.give_feedback,
     });
 
     this._panResponder = PanResponder.create({
@@ -95,7 +95,12 @@ export class PT1_Test extends React.Component {
   }
 
   handleTap() {
+    this.setState({tapped: true});
     this.handleScoring();
+    setTimeout(() => this.nav_or_reset(), 1000);
+  }
+
+  nav_or_reset() {
     if (this.state.count == 5) {
       this.props.navigation.navigate(
         'PT1_Conclusion',
@@ -108,17 +113,20 @@ export class PT1_Test extends React.Component {
   }
 
   handleScoring() {
+    // calculate score
     var score = acc_helper(
       global.barCoords[this.state.target_index].rot,
       this.state.user_rotation
     );
+    // record the score both on the backend and internally
     this.record(score);
     this.state.scores.push(score);
-    if (score >= 90 && global.give_bar_feedback) {
+    // determine whether or not to play sound
+    if (score >= 90 && this.state.give_feedback) {
       this.handlePlaySoundAsync();
     }
     this.setState({
-      bottom_text: 'Accuracy ' + score + "% (average must be at least 95%)\n\nTap to continue.",
+      bottom_text: 'Accuracy ' + score + "% (average must be at least 95%)",
     });
   }
 
@@ -151,16 +159,13 @@ export class PT1_Test extends React.Component {
   }
 
   renderUserBar() {
-    if (this.state.is_bar_test) {
-      var image = '../Pictures/bar.png';
-    }
-    else {
-      var image = '../Pictures/grating.png';
-    }
+    var icon = this.props.navigation.state.params.test_type == 'bars'
+      ? require('../Pictures/bar.png')
+      : require('../Pictures/grating.png');
     return(
 			<View>
 				<Image
-					source={require(image)}
+					source={icon}
 					style={{
 						transform: [
 							{rotate: this.state.user_rotation + 'deg'}
@@ -174,10 +179,13 @@ export class PT1_Test extends React.Component {
   }
 
   renderTargetBar() {
+    var icon = this.props.navigation.state.params.test_type == 'bars'
+      ? require('../Pictures/bar.png')
+      : require('../Pictures/grating.png');
     return(
 		 <View>
 			<Image
-				source={require('../Pictures/bar.png')}
+				source={icon}
 				style = {{
 					transform: [
             {rotate: global.barCoords[this.state.target_index].rot + 'deg'}
@@ -200,6 +208,19 @@ export class PT1_Test extends React.Component {
 		    </Text>
 	  </View>
 	 );
+  }
+
+  renderPushIcon() {
+    return(
+      <View>
+        <Icon
+          reverse
+          name='arrow-forward'
+          type='materialicon'
+          onPress={() => this.handleTap()}
+        />
+      </View>
+    );
   }
 
   render() {
@@ -226,14 +247,9 @@ export class PT1_Test extends React.Component {
         </View>
         <View style={styles.instructions}>
           <Text style={{marginBottom: 7}}>
-            {this.state.count == 1 ? 'Use finger to make bars parallel, then tap the button' : null}
+            {this.state.count == 1 && !this.state.tapped ? 'Use finger to make bars parallel, then tap the button' : null }
           </Text>
-          <Icon
-            reverse
-            name='arrow-forward'
-            type='materialicon'
-            onPress={() => this.handleTap()}
-          />
+          {!this.state.tapped ? this.renderPushIcon() : null}
         </View>
       </View>
     );
